@@ -1,0 +1,19 @@
+model { 
+
+  # likelihood
+  for (i in 1:N) {
+    y[i]      ~ dpois(mu[i])
+	mu[i]    <- exp(theta[i])
+	theta[i] <- inprod(beta1, x1[hmat[i,]])
+  }
+  
+  for (k in 1:K) { # ref: Data Analysis Using... Page 424
+    beta1[k] <- gamma * (beta1.raw[k] - mean(beta1.raw[]))
+	beta1.raw[k] ~ dnorm(mu.beta1.raw, tau.beta1.raw)
+  }
+  
+  gamma ~ dunif(0, 100)
+  tau.beta1.raw <- pow(sigma.beta1.raw, -2)
+   
+  want <- beta1
+}

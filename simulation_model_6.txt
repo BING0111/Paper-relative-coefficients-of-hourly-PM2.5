@@ -1,0 +1,27 @@
+model {
+
+  # likelihood
+  for (i in 1:nday) {
+    y[i]   ~ dpois(mu[i])
+	mu[i] <- exp(alpha + beta1 * Xavg[i] )
+	Xavg[i] <- inprod(gamma, x1[hmat[i,]])
+  }
+  
+  # imputation
+  for (k in 1:nhour) {
+    x1[k] ~ dnorm(mu.x1[k], tau.x1)
+  }
+  tau.x1 <- 1/pow(sigma.x1, 2)
+  
+  # prior
+  alpha ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  beta3 ~ dnorm(0, 0.0001)
+  beta4 ~ dnorm(0, 0.0001)
+  
+  for (g in 1:24) {
+	gamma[g] ~ dnorm(0.04, inv.sigma.gamma.squared)
+  }
+  inv.sigma.gamma.squared <- 1/pow(sigma.gamma, 2)
+  sigma.gamma ~ dunif(0, 100)
+}
