@@ -4,7 +4,7 @@
 setwd('E:/GitHub/Paper-relative-coefficients-of-hourly-PM2.5')
 
 # Scenario 1-1 --------------------------------------------------------------
-# Exposures are independent, coefficients are independent.
+# Exposures are independent; coefficients are independent.
 
 ## generate data
 mean24 <- apply(part1[,str_which(colnames(part1), 'Hour')], 2, function(x) {mean(x, na.rm=TRUE)})

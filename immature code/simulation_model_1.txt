@@ -1,0 +1,6 @@
+model { 
+  for (i in 2:n) {
+    x[i] ~ dnorm(x[i-1], tau)
+  }
+  tau <- 1/pow(sigma, 2)
+}
