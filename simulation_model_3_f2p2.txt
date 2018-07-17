@@ -3,8 +3,8 @@ model {
   # likelihood
   for (i in 1:N) {
     y[i]      ~ dpois(mu[i])
-	mu[i]    <- exp(theta[i])
-	theta[i] <- inprod(want, x1[hmat[i,]])
+    mu[i]    <- exp(theta[i])
+    theta[i] <- inprod(want, x1[hmat[i,]])
   }
   
   want <- beta1 * gamma

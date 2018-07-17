@@ -83,9 +83,9 @@ summary(truevalue - impute.median)
 # Simulation of the estimation process -------------------------------------
 
 ## Generating data
-n <- 1000; k <- 5; alpha <- 0.1; beta <- 0.03; 
+n <- 1000; k <- 5; alpha <- 0.1; beta <- 0.03
 g1 <- rep(1/k, k)
-g2 <- c(0.05, 0.1, 0.1, 0.5, 0.25)
+g2 <- c(0.17, 0.18, 0.19, 0.21, 0.25)
 
 b1 <- beta * g1
 b2 <- beta * g2
@@ -120,7 +120,7 @@ dat.use <- list(y = y, x1 = xvct, hmat = hmat, nhour = nhour, N = n, K = k)
 params  <- c('want')
 
 out <- jagsUI::jags(data = dat.use, inits = NULL, parameters.to.save = params,
-                    model.file = "simulation_model_3_f1p1.txt",
+                    model.file = "simulation_model_3_f2p4.txt",
                     n.chains = 3, n.adapt = 1000, n.iter = 10000, n.burnin = 2000, n.thin = 5,
                     parallel = TRUE, n.cores = 3, verbose = T)
 summary(out)
@@ -155,6 +155,7 @@ ggplot(data = psts) +
   scale_y_continuous(name = '') + 
   scale_x_continuous(name = 'gamma', limits = c(-0.01, 0.51), breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5)) + 
   theme_bw()
+
 # Simulation of the full workflow with completed dataset ------------------
 
 # Construct the completed dataset

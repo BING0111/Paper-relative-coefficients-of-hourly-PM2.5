@@ -1,0 +1,29 @@
+model { 
+
+  # likelihood
+  for (i in 1:N) {
+    y[i]      ~ dpois(mu[i])
+    mu[i]    <- exp(theta[i])
+    theta[i] <- inprod(want, x1[hmat[i,]])
+  }
+  
+  want <- beta1 * gamma[,pick] * (1/24)
+  
+  # prior
+  beta1 ~ dnorm(mu.beta1, tau.beta1)
+  mu.beta1 <- 0.05
+  tau.beta1 <- pow(sigma.beta1, -2)
+  sigma.beta1 <- 0.05
+  
+  for (g in 1:K) {
+    gamma[g,1] <- 0
+	gamma[g,2] ~ dnorm(mu.gamma, tau.gamma)
+  }
+  mu.gamma <- 1
+  tau.gamma <- pow(sigma.gamma, -2)
+  sigma.gamma <- 0.3
+  
+  pick ~ dcat(q[1:2])
+  q[1] <- 0.2
+  q[2] <- 0.8
+}
