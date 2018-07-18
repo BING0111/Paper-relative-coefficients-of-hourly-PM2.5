@@ -1,0 +1,29 @@
+model { 
+
+  # likelihood
+  for (i in 1:N) {
+    y[i]   ~ dnorm(mu[i], sigma.y)
+    mu[i] <- inprod(xvct[hmat[i,]], beta)
+  }
+  
+  beta <- bstar * gamma * (1/24)
+  
+  # prior for bstar
+  bstar ~ dnorm(mu.beta, tau.beta)
+  mu.beta <- 0.03
+  tau.beta <- pow(sigma.beta, -2)
+  sigma.beta <- 0.001
+  
+  # prior for gamma (random walk)
+  gamma[1] ~ dnorm(mu.gamma, tau.g1)
+  for (g in 2:K) {
+	gamma[g] <- dnorm(gamma[g-1], tau.g2)
+  }
+  
+  mu.gamma <- 1
+  tau.g1   <- pow(sigma.g1, -2)
+  sigma.g1 <- 0.3
+  
+  # sigma.y
+  sigma.y <- 1
+}

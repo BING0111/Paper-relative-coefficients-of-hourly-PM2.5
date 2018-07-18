@@ -2,31 +2,26 @@ model {
 
   # likelihood
   for (i in 1:N) {
-    y[i]      ~ dnorm(mu[i], sigma.y)
-    # mu[i]    <- exp(theta[i])
+    y[i]   ~ dnorm(mu[i], sigma.y)
     mu[i] <- inprod(xvct[hmat[i,]], beta)
   }
   
   beta <- bstar * gamma * (1/24)
   
-  # prior
+  # prior for bstar
   bstar ~ dnorm(mu.beta, tau.beta)
-  
-  mu.beta <- 0.005
+  mu.beta <- 0.03
   tau.beta <- pow(sigma.beta, -2)
   sigma.beta <- 0.001
-  
-  sigma.y <- 1
-  for (g in 2:K) {
-	gamma[g] <- theta[1] * gamma[g-1] + delta
-  }
-  
-  gamma[1] ~ dnorm(mu.gamma, tau.gamma)
 
+  # prior for gamma
+  for (g in 1:K) {
+	gamma[g] ~ dnorm(mu.gamma, tau.gamma)
+  }
   mu.gamma <- 1
   tau.gamma <- pow(sigma.gamma, -2)
   sigma.gamma <- 0.3
-  
-  theta ~ dnorm(1, 0.0001)
-  delta ~ dnorm(0, 0.0001)
+
+  # sigma.y
+  sigma.y <- 10
 }
