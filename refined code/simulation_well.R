@@ -201,11 +201,14 @@ xvct <- dat[,-1] %>%
   select(pm) %>% 
   as.vector
 
+xmat <- dat[,3:26] %>% as.matrix
+
 dat.use <- list(y = dat$y, xvct = xvct, hmat = hmat, N = n, K = 24) 
+dat.use <- list(y = dat$y, xmat = xmat, N = n, K = 24) 
 params  <- c('beta')
 
 out <- jagsUI::jags(data = dat.use, inits = NULL, parameters.to.save = params,
-                    model.file = "refined code/simulation_normal_2prior_RandomWalk_0.txt",
+                    model.file = "refined code/simulation_normal_1prior_RandomWalk.txt",
                     n.chains = 3, n.adapt = 1000, n.iter = 10000, n.burnin = 2000, n.thin = 5,
                     parallel = TRUE, n.cores = 3, verbose = T)
 out$mean$beta

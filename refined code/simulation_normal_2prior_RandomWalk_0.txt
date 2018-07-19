@@ -3,7 +3,8 @@ model {
   # likelihood
   for (i in 1:N) {
     y[i]   ~ dnorm(mu[i], sigma.y)
-    mu[i] <- inprod(xvct[hmat[i,]], beta)
+    # mu[i] <- inprod(xvct[hmat[i,]], beta)
+    mu[i] <- inprod(xmat[i,], beta)
   }
   
   beta <- bstar * gamma[,pick] * (1/24)
@@ -12,7 +13,7 @@ model {
   bstar ~ dnorm(mu.beta, tau.beta)
   mu.beta <- 0.03
   tau.beta <- pow(sigma.beta, -2)
-  sigma.beta <- 0.001
+  sigma.beta <- 0.01
   
   # prior for gamma (random walk)
   for (g in 1:K) {
@@ -25,10 +26,10 @@ model {
   }
   
   mu.gamma <- 1
-  tau.g1   <- pow(sigma.g1, -2)
-  sigma.g1 <- 0.3
   
-  tau.g ~ dgamma(100, 0.5) 
+  # tau.g ~ dgamma(100, 0.5) 
+  tau.g  <- pow(sigma.g, -2)
+  sigma.g ~ dnorm(0.3, 0.05)
   
   pick ~ dcat(q[1:2])
   q[1] <- 0.5
