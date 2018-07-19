@@ -4,21 +4,23 @@ model {
   for (i in 1:N) {
     y[i]      ~ dpois(mu[i])
     mu[i]    <- exp(theta[i])
-    theta[i] <- inprod(beta, x1[hmat[i,]])
+    theta[i] <- inprod(xvct[hmat[i,]], beta)
   }
   
   beta <- bstar * gamma[,pick] * (1/24)
   
-  # prior
+  # prior for bstar
   bstar ~ dnorm(mu.bstar, tau.bstar)
   mu.bstar <- 0.03
   tau.bstar <- pow(sigma.bstar, -2)
   sigma.bstar <- 0.015
   
+  # prior for gamma (random walk + 0)
   for (g in 1:K) {
     gamma[g,1] <- 0
 	gamma[g,2] ~ dnorm(mu.gamma, tau.gamma)
   }
+  
   mu.gamma <- 1
   tau.gamma <- pow(sigma.gamma, -2)
   sigma.gamma <- 0.4

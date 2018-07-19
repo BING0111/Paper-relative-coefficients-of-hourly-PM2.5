@@ -205,9 +205,20 @@ dat.use <- list(y = dat$y, xvct = xvct, hmat = hmat, N = n, K = 24)
 params  <- c('beta')
 
 out <- jagsUI::jags(data = dat.use, inits = NULL, parameters.to.save = params,
-                    model.file = "refined code/simulation_normal_2prior_indep_0.txt",
+                    model.file = "refined code/simulation_normal_2prior_RandomWalk_0.txt",
                     n.chains = 3, n.adapt = 1000, n.iter = 10000, n.burnin = 2000, n.thin = 5,
                     parallel = TRUE, n.cores = 3, verbose = T)
 out$mean$beta
 out$q50$beta
 summary(out)
+
+
+coef.res2 <- data.frame(b = c(beta2, out$q50$beta), 
+                       type = factor(rep(c('beta', 'beta.hat'), each=24)), 
+                       hour = rep(1:24, 2))
+
+ggplot(coef.res2, aes(x = hour, y = b)) + 
+  geom_point(aes(col = type, group = type), size=2) +
+  ggtitle('data: true X, smoothed beta, normal family with identity link \nmodel: normal_2prior_RandomWalk_0') + 
+  theme(plot.title = element_text(vjust = 0.1)) + 
+  theme_bw()

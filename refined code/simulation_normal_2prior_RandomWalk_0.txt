@@ -6,7 +6,7 @@ model {
     mu[i] <- inprod(xvct[hmat[i,]], beta)
   }
   
-  beta <- bstar * gamma * (1/24)
+  beta <- bstar * gamma[,pick] * (1/24)
   
   # prior for bstar
   bstar ~ dnorm(mu.beta, tau.beta)
@@ -15,16 +15,24 @@ model {
   sigma.beta <- 0.001
   
   # prior for gamma (random walk)
-  gamma[1] ~ dnorm(mu.gamma, tau.g1)
+  for (g in 1:K) {
+    gamma[g,1] <- 0
+  }
+  
+  gamma[1,2] ~ dnorm(mu.gamma, tau.g)
   for (g in 2:K) {
-	gamma[g] ~ dnorm(gamma[g-1], tau.g2)
+	gamma[g,2] ~ dnorm(gamma[g-1,2], tau.g)
   }
   
   mu.gamma <- 1
   tau.g1   <- pow(sigma.g1, -2)
   sigma.g1 <- 0.3
   
-  tau.g2 ~ dgamma(30, 0.5) 
+  tau.g ~ dgamma(100, 0.5) 
+  
+  pick ~ dcat(q[1:2])
+  q[1] <- 0.5
+  q[2] <- 0.5
   
   # sigma.y
   sigma.y <- 1

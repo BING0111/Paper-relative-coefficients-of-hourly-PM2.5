@@ -1,0 +1,61 @@
+---
+title: "JAGS_model"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### simulation_normal_2prior_indep_0.txt
+
+\[
+\begin{eqnarray}
+y_{i}   &\sim& \mathrm{N}(\mu_{i}, \sigma_{y}^2) \\
+\mu_{i} &=&    X_{i}\beta \\
+\beta   &=&    \beta^\star\gamma_{g,j}\times(1/24), \space j=1,2, \space g=1,...,24\\
+\beta^\star  &=& \mathrm{N}(0.03, 0.001^2) \\
+\gamma_{,1}  &=& 0 \\
+\gamma_{1,2} &\sim& \mathrm{N}(1, 0.3^2) \\
+\gamma_{g,2} &\sim& \mathrm{N}(\gamma_{g-1,2}, \sigma_{\gamma}^2), \space 2 \leq g \leq 24 \\
+1/\sigma_{\gamma}^2 &\sim& \mathrm{Gamma}(shape, rate)
+\end{eqnarray}
+\]
+
+
+```{r eval = FALSE}
+model { 
+
+  # likelihood
+  for (i in 1:N) {
+    y[i]   ~ dnorm(mu[i], sigma.y)
+    mu[i] <- inprod(xvct[hmat[i,]], beta)
+  }
+  
+  beta <- bstar * gamma[,pick] * (1/24)
+  
+  # prior for bstar
+  bstar ~ dnorm(mu.beta, tau.beta)
+  mu.beta <- 0.03
+  tau.beta <- pow(sigma.beta, -2)
+  sigma.beta <- 0.001
+  
+  # prior for gamma
+  for (g in 1:K) {
+    gamma[g,1] <- 0
+	gamma[g,2] ~ dnorm(mu.gamma, tau.gamma)
+  }
+  mu.gamma <- 1
+  tau.gamma <- pow(sigma.gamma, -2)
+  sigma.gamma <- 0.4
+  
+  pick ~ dcat(q[1:2])
+  q[1] <- 0.5
+  q[2] <- 0.5
+  
+  # sigma.y
+  sigma.y <- 10
+}
+```
