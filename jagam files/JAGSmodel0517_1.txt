@@ -1,0 +1,48 @@
+model {
+  eta <- X %*% b ## linear predictor
+  for (i in 1:n) { mu[i] <-  exp(eta[i]) } ## expected response
+  for (i in 1:n) { y[i] ~ dpois(mu[i]) } ## response 
+  
+  ## Parametric effect priors CHECK tau=1/27^2 is appropriate!
+  for (i in 1:1) { b[i] ~ dnorm(0,0.0014) }
+  
+  ## prior for s(time):city5001... 
+  K1 <- S1[1:11,1:11] * lambda[1]  + S1[1:11,12:22] * lambda[2]
+  b[2:12] ~ dmnorm(zero[2:12],K1) 
+  
+  ## prior for s(time):city5101... 
+  K2 <- S2[1:11,1:11] * lambda[3]  + S2[1:11,12:22] * lambda[4]
+  b[13:23] ~ dmnorm(zero[13:23],K2) 
+  
+  ## prior for s(time):city5103... 
+  K3 <- S3[1:11,1:11] * lambda[5]  + S3[1:11,12:22] * lambda[6]
+  b[24:34] ~ dmnorm(zero[24:34],K3) 
+  
+  ## prior for s(time):city5201... 
+  K4 <- S4[1:11,1:11] * lambda[7]  + S4[1:11,12:22] * lambda[8]
+  b[35:45] ~ dmnorm(zero[35:45],K4) 
+  
+  ## prior for s(time):city5202... 
+  K5 <- S5[1:11,1:11] * lambda[9]  + S5[1:11,12:22] * lambda[10]
+  b[46:56] ~ dmnorm(zero[46:56],K5) 
+  
+  ## prior for s(time):city5203... 
+  K6 <- S6[1:11,1:11] * lambda[11]  + S6[1:11,12:22] * lambda[12]
+  b[57:67] ~ dmnorm(zero[57:67],K6) 
+  
+  ## prior for s(time):city5204... 
+  K7 <- S7[1:11,1:11] * lambda[13]  + S7[1:11,12:22] * lambda[14]
+  b[68:78] ~ dmnorm(zero[68:78],K7) 
+  
+  ## prior for s(time):city5223... 
+  K8 <- S8[1:11,1:11] * lambda[15]  + S8[1:11,12:22] * lambda[16]
+  b[79:89] ~ dmnorm(zero[79:89],K8) 
+  
+  ## smoothing parameter priors CHECK...
+  for (i in 1:2) {
+    lambda0[i] ~ dgamma(.05,.005)
+    rho0[i] <- log(lambda0[i])
+  }
+  rho <- L %*% rho0
+  for (i in 1:16) { lambda[i] <- exp(rho[i]) }
+}

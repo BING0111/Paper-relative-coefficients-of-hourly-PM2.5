@@ -1,0 +1,16 @@
+
+# model_1 
+dat <- dat.use %>% 
+  select(y = DeathNum.NonAcc, city = City) %>% 
+  mutate(time = 1:nrow(.), city = as.factor(city))
+  
+# model_2
+dat <- dat.use %>% 
+  select(y = DeathNum.NonAcc, city = City) %>% 
+  group_by(city) %>% mutate(time = seq_along(city))
+
+# model_3
+dat <- dat.use %>% 
+  select(y = DeathNum.NonAcc, city = City) %>% 
+  group_by(city) %>% mutate(time = seq_along(city)) %>% 
+  ungroup() %>% mutate(city = as.factor(city))
